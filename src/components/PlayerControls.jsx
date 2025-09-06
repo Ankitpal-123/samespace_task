@@ -1,0 +1,129 @@
+// src/components/PlayerControls.jsx
+import React, { useState, useEffect } from "react";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { HiMiniSpeakerXMark } from "react-icons/hi2";
+import { GiSpeaker } from "react-icons/gi";
+import Left_icon from "../assets/left-icon.png";
+import Pause from "../assets/Pause_player.png";
+import Play from "../assets/Play_player.png";
+import Right from "../assets/Right_icon.png";
+
+export default function PlayerControls({
+  audioManager,
+  song,
+  isPlaying,
+  handlePlayPause,
+  handlePrev,
+  handleNext,
+  handleSeek,
+  position,
+  duration,
+  formatTime,
+  seekerRef,
+}) {
+  const [isMuted, setIsMuted] = useState(() =>
+    audioManager ? audioManager.isMuted() : false
+  );
+
+  // Sync local state if audioManager changes
+  useEffect(() => {
+    if (!audioManager) return;
+    setIsMuted(!!audioManager.isMuted());
+  }, [audioManager]);
+
+  const handleMuteToggle = () => {
+    if (!audioManager) return;
+    audioManager.toggleMute();
+    setIsMuted(audioManager.isMuted());
+  };
+
+  return (
+    <section className="flex flex-col gap-6">
+      {/* Info */}
+      <div className="flex flex-col">
+        <h1 className="text-[32px] text-left font-[700] text-white truncate">
+          {song?.title || "—"}
+        </h1>
+        <p className="text-[16px] font-[400] text-white/70 truncate">
+          {song?.artist || "—"}
+        </p>
+      </div>
+
+      {/* Cover */}
+      <div>
+        <div className="rounded-xl overflow-hidden shadow-lg border border-white/10">
+          {song?.cover ? (
+            <img
+              src={song.cover}
+              alt="cover"
+              className="w-[450px] h-[450px] object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-white/5 text-white/60">
+              No Cover
+            </div>
+          )}
+        </div>
+
+        {/* Progress */}
+        <div className="w-full">
+          <div className="mt-4">
+            <input
+              ref={seekerRef}
+              type="range"
+              min={0}
+              max={duration || 0}
+              value={position}
+              step={0.01}
+              onChange={handleSeek}
+              onInput={handleSeek}
+              className="player-range w-full"
+            />
+
+            <div className="flex justify-between text-xs text-white/70 mt-1">
+              <span>{formatTime(position)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+          </div>
+
+          {/* Controls */}
+          <div className="mt-4 w-full flex items-center justify-around gap-6">
+            <HiOutlineDotsHorizontal className="h-10 w-10 p-2 bg-white/5 rounded-full" />
+
+            <button onClick={handlePrev} className="p-3">
+              <img src={Left_icon} alt="Previous" />
+            </button>
+
+            <button
+              onClick={handlePlayPause}
+              className="px-5 py-3 rounded-full text-black font-semibold"
+            >
+              {isPlaying ? (
+                <img src={Pause} alt="Pause" className="h-12 w-12" />
+              ) : (
+                <img src={Play} alt="Play" className="h-12 w-12" />
+              )}
+            </button>
+
+            <button onClick={handleNext} className="p-3">
+              <img src={Right} alt="Next" />
+            </button>
+
+            {/* Mute toggle (uses AudioManager) */}
+            <button
+              onClick={handleMuteToggle}
+              className="h-10 w-10 p-2 bg-white/5 rounded-full flex items-center justify-center"
+              aria-label={isMuted ? "Unmute" : "Mute"}
+            >
+              {isMuted ? (
+                <HiMiniSpeakerXMark className="h-6 w-6" />
+              ) : (
+                <GiSpeaker className="h-6 w-6" />
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
