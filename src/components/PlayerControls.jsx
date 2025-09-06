@@ -87,27 +87,29 @@ export default function PlayerControls({
           </div>
 
           {/* Controls */}
-          <div className="mt-4 w-full flex items-center justify-around gap-6">
+          <div className="mt-4 w-full flex items-center justify-between gap-6">
             <HiOutlineDotsHorizontal className="h-10 w-10 p-2 bg-white/5 rounded-full" />
 
-            <button onClick={handlePrev} className="p-3">
-              <img src={Left_icon} alt="Previous" />
-            </button>
+            <div className="flex">
+              <button onClick={handlePrev} className="p-3">
+                <img src={Left_icon} alt="Previous" />
+              </button>
 
-            <button
-              onClick={handlePlayPause}
-              className="px-5 py-3 rounded-full text-black font-semibold"
-            >
-              {isPlaying ? (
-                <img src={Pause} alt="Pause" className="h-12 w-12" />
-              ) : (
-                <img src={Play} alt="Play" className="h-12 w-12" />
-              )}
-            </button>
+              <button
+                onClick={handlePlayPause}
+                className="px-5 py-3 rounded-full text-black font-semibold"
+              >
+                {isPlaying ? (
+                  <img src={Pause} alt="Pause" className="h-12 w-12" />
+                ) : (
+                  <img src={Play} alt="Play" className="h-12 w-12" />
+                )}
+              </button>
 
-            <button onClick={handleNext} className="p-3">
-              <img src={Right} alt="Next" />
-            </button>
+              <button onClick={handleNext} className="p-3">
+                <img src={Right} alt="Next" />
+              </button>
+            </div>
 
             {/* Mute toggle (uses AudioManager) */}
             <button

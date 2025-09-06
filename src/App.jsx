@@ -34,7 +34,7 @@ const App = () => {
   if (!audioManagerRef.current) audioManagerRef.current = new AudioManager();
   const audioManager = audioManagerRef.current;
 
-  // Fetch songs
+  // Fetch songs from API
   useEffect(() => {
     async function fetchSongs() {
       try {
@@ -78,26 +78,19 @@ const App = () => {
     audioManager.audio.onloadedmetadata = () => {
       setDuration(audioManager.getDuration());
     };
-  }, [activeIndex, songs]);
 
-  // Listen to time updates
-  useEffect(() => {
     audioManager.onTimeUpdate = (time) => setPosition(time);
-    audioManager.onEnded = () => {
-      // 🔥 when song ends, play next automatically
-      handleNext();
-    };
-  }, [audioManager, filteredSongs, songs]);
+    audioManager.onEnded = () => handleNext();
+  }, [activeIndex, songs, isPlaying]);
 
-  // Handlers
+  // Seek handler
   const handleSeek = (e) => {
     const t = Number(e.target.value);
     audioManager.seek(t);
     setPosition(t);
   };
 
-  // Handlers
-  // Handlers
+  // Play / Pause
   const handlePlayPause = () => {
     if (isPlaying) {
       audioManager.pause();
@@ -107,20 +100,15 @@ const App = () => {
     setIsPlaying(!isPlaying);
   };
 
+  // Next / Prev
   const handleNext = () => {
-    setActiveIndex((i) => {
-      const nextIndex = (i + 1) % songs.length;
-      return nextIndex;
-    });
-    setIsPlaying(true); // ✅ ensure autoplay
+    setActiveIndex((i) => (i + 1) % songs.length);
+    setIsPlaying(true);
   };
 
   const handlePrev = () => {
-    setActiveIndex((i) => {
-      const prevIndex = (i - 1 + songs.length) % songs.length;
-      return prevIndex;
-    });
-    setIsPlaying(true); // ✅ ensure autoplay
+    setActiveIndex((i) => (i - 1 + songs.length) % songs.length);
+    setIsPlaying(true);
   };
 
   // Search filter
@@ -139,15 +127,21 @@ const App = () => {
     }
   }, [query, songs]);
 
-  // pick songs based on tab
-  const displayedSongs =
-    tab === "top"
-      ? songs // same list for now
-      : songs;
+  const handleSongClick = (clickedIndex, list) => {
+    const song = list[clickedIndex];
+    const realIndex = songs.findIndex((s) => s.id === song.id);
+    if (realIndex !== -1) {
+      setActiveIndex(realIndex);
+      setIsPlaying(true);
+    }
+  };
+
+  // pick songs based on tab (you can extend later)
+  const displayedSongs = filteredSongs;
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col md:flex-row text-white transition-all duration-700"
+      className="min-h-screen w-full flex flex-col md:flex-row text-white transition-all duration-500"
       style={{
         background: `linear-gradient(135deg, ${bgColor}, #000)`,
       }}
@@ -159,7 +153,7 @@ const App = () => {
 
       {/* Main Section */}
       <main className="flex-1 flex flex-col md:flex-row">
-        {/* Mobile Header with menu */}
+        {/* Mobile Header */}
         <div className="flex md:hidden items-center justify-between p-4">
           <img
             src={Spotify_logo}
@@ -191,7 +185,7 @@ const App = () => {
               <SongList
                 songs={displayedSongs}
                 activeIndex={activeIndex}
-                setActiveIndex={setActiveIndex}
+                setActiveIndex={(i) => handleSongClick(i, displayedSongs)}
                 setIsPlaying={setIsPlaying}
                 audioManager={audioManager}
                 loading={loading}
@@ -216,7 +210,7 @@ const App = () => {
           <div className="w-full lg:w-full max-h-[50vh] lg:max-h-full flex">
             <AnimatePresence mode="wait">
               <motion.div
-                key={tab} // <-- very important
+                key={tab}
                 initial={{ opacity: 0, x: 40 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -40 }}
@@ -226,7 +220,14 @@ const App = () => {
                 <SongList
                   songs={displayedSongs}
                   activeIndex={activeIndex}
-                  setActiveIndex={setActiveIndex}
+                  setActiveIndex={(clickedIndex) => {
+                    const song = displayedSongs[clickedIndex];
+                    const realIndex = songs.findIndex((s) => s.id === song.id);
+                    if (realIndex !== -1) {
+                      setActiveIndex(realIndex);
+                      setIsPlaying(true);
+                    }
+                  }}
                   setIsPlaying={setIsPlaying}
                   audioManager={audioManager}
                   loading={loading}
@@ -237,13 +238,11 @@ const App = () => {
           </div>
         </div>
 
-        {/* Player always visible */}
+        {/* Player */}
         <div className="flex-1 flex flex-col px-4 pt-12 md:px-8 pb-4 md:pb-8 gap-6">
           <div className="w-full flex flex-col items-center">
             <PlayerControls
-              song={
-                displayedSongs.length > 0 ? displayedSongs[activeIndex] : null
-              }
+              song={songs.length > 0 ? songs[activeIndex] : null}
               isPlaying={isPlaying}
               handlePlayPause={handlePlayPause}
               handlePrev={handlePrev}
