@@ -34,6 +34,8 @@ const App = () => {
   if (!audioManagerRef.current) audioManagerRef.current = new AudioManager();
   const audioManager = audioManagerRef.current;
 
+  const displayedSongs = filteredSongs;
+
   // Fetch songs from API
   useEffect(() => {
     async function fetchSongs() {
@@ -62,7 +64,7 @@ const App = () => {
     fetchSongs();
   }, []);
 
-  // Update audio when active song changes
+  // Update audio
   useEffect(() => {
     if (!songs.length) return;
     const currentSong = songs[activeIndex];
@@ -127,144 +129,148 @@ const App = () => {
     }
   }, [query, songs]);
 
-  // const handleSongClick = (clickedIndex, list) => {
-  //   const song = list[clickedIndex];
-  //   const realIndex = songs.findIndex((s) => s.id === song.id);
-  //   if (realIndex !== -1) {
-  //     setActiveIndex(realIndex);
-  //     setIsPlaying(true);
-  //   }
-  // };
-
-  // pick songs based on tab (you can extend later)
-  const displayedSongs = filteredSongs;
-
   return (
-    <div
-      className="min-h-screen w-full flex flex-col md:flex-row text-white transition-all duration-500"
-      style={{
-        background: `linear-gradient(135deg, ${bgColor}, #000)`,
-      }}
-    >
-      {/* Left Sidebar (hidden on mobile) */}
-      <aside className="hidden md:flex w-full md:w-[20%] lg:w-[20%] flex-shrink-0 flex-col justify-between p-4 md:p-6">
-        <Leftcomponent />
-      </aside>
-
-      {/* Main Section */}
-      <main className="flex-1 flex flex-col md:flex-row">
-        {/* Mobile Header */}
-        <div className="flex md:hidden items-center justify-between p-4">
-          <img
-            src={Spotify_logo}
-            alt="Spotify logo"
-            className="h-[40px] w-[133px]"
-          />
-          <button onClick={() => setMenuOpen(true)}>
-            <FiMenu size={28} />
-          </button>
+    <>
+      <div
+        className="min-h-screen w-full flex flex-col lg:flex-row text-white transition-all duration-500"
+        style={{
+          background: `linear-gradient(135deg, ${bgColor}, #000)`,
+        }}
+      >
+        <aside className="hidden lg:flex w-full lg:w-[20%] flex-shrink-0 flex-col justify-between p-4 lg:p-6">
+          <Leftcomponent />
+        </aside>
+        <div className="leftcomponent hidden sm:flex lg:hidden w-full lg:w-[20%] flex-shrink-0 justify-between p-4">
+          <Leftcomponent />
         </div>
 
-        {/* Song List Drawer (mobile only) */}
-        {menuOpen && (
-          <div className="fixed inset-0 z-50 bg-black bg-opacity-80 flex">
-            <div className="bg-neutral-900 w-full h-full p-4 overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold">Songs</h2>
-                <button onClick={() => setMenuOpen(false)}>
-                  <IoClose size={28} />
-                </button>
+        <main className="flex-1 flex flex-col md:flex-row sm:pl-10 ">
+          <div className="flex md:hidden items-center justify-between p-4">
+            <img
+              src={Spotify_logo}
+              alt="Spotify logo"
+              className="h-[40px] w-[133px]"
+            />
+            <button onClick={() => setMenuOpen(true)}>
+              <FiMenu size={28} />
+            </button>
+          </div>
+
+          {menuOpen && (
+            <div className="fixed inset-0 z-50 bg-black bg-opacity-80 flex">
+              <div className="bg-neutral-900 w-full h-full p-4 overflow-y-auto">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold">Songs</h2>
+                  <button onClick={() => setMenuOpen(false)}>
+                    <IoClose size={28} />
+                  </button>
+                </div>
+
+                <SearchTabs
+                  tab={tab}
+                  setTab={setTab}
+                  query={query}
+                  setQuery={setQuery}
+                />
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={tab}
+                    initial={{ opacity: 0, x: 40 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -40 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    className="w-full lg:w-full max-h-[50vh] lg:max-h-full flex"
+                  >
+                    <SongList
+                      songs={displayedSongs}
+                      activeIndex={activeIndex}
+                      setActiveIndex={(clickedIndex) => {
+                        const song = displayedSongs[clickedIndex];
+                        const realIndex = songs.findIndex(
+                          (s) => s.id === song.id
+                        );
+                        if (realIndex !== -1) {
+                          setActiveIndex(realIndex);
+                          setIsPlaying(true);
+                        }
+                      }}
+                      setIsPlaying={setIsPlaying}
+                      audioManager={audioManager}
+                      loading={loading}
+                      formatTime={formatTime}
+                    />
+                  </motion.div>
+                </AnimatePresence>
               </div>
 
+              <div className="flex-1" onClick={() => setMenuOpen(false)} />
+            </div>
+          )}
+
+          <div className="hidden md:block w-[30%]">
+            <div className="pt-4 ">
               <SearchTabs
                 tab={tab}
                 setTab={setTab}
                 query={query}
                 setQuery={setQuery}
               />
-              <SongList
-                songs={displayedSongs}
-                activeIndex={activeIndex}
-                setActiveIndex={(clickedIndex) => {
-                  const song = displayedSongs[clickedIndex];
-                  const realIndex = songs.findIndex((s) => s.id === song.id);
-                  if (realIndex !== -1) {
-                    setActiveIndex(realIndex);
-                    setIsPlaying(true);
-                  }
-                }}
-                setIsPlaying={setIsPlaying}
-                audioManager={audioManager}
-                loading={loading}
+            </div>
+
+            <div className="w-full lg:w-full max-h-[50vh] lg:max-h-full flex">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={tab}
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -40 }}
+                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  className="w-full lg:w-full max-h-[50vh] lg:max-h-full flex"
+                >
+                  <SongList
+                    songs={displayedSongs}
+                    activeIndex={activeIndex}
+                    setActiveIndex={(clickedIndex) => {
+                      const song = displayedSongs[clickedIndex];
+                      const realIndex = songs.findIndex(
+                        (s) => s.id === song.id
+                      );
+                      if (realIndex !== -1) {
+                        setActiveIndex(realIndex);
+                        setIsPlaying(true);
+                      }
+                    }}
+                    setIsPlaying={setIsPlaying}
+                    audioManager={audioManager}
+                    loading={loading}
+                    formatTime={formatTime}
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* Player */}
+          <div className="flex-1 flex flex-col px-4 pt-6 md:pt-12 md:px-8 pb-4 md:pb-8 gap-6">
+            <div className="w-full flex flex-col items-center">
+              <PlayerControls
+                song={songs.length > 0 ? songs[activeIndex] : null}
+                isPlaying={isPlaying}
+                handlePlayPause={handlePlayPause}
+                handlePrev={handlePrev}
+                handleNext={handleNext}
+                handleSeek={handleSeek}
+                position={position}
+                duration={duration}
                 formatTime={formatTime}
+                seekerRef={seekerRef}
+                audioManager={audioManager}
               />
             </div>
-            <div className="flex-1" onClick={() => setMenuOpen(false)} />
           </div>
-        )}
-
-        {/* Desktop SongList + Search */}
-        <div className="hidden md:block w-[30%]">
-          <div className="pt-4 md:pt-6">
-            <SearchTabs
-              tab={tab}
-              setTab={setTab}
-              query={query}
-              setQuery={setQuery}
-            />
-          </div>
-
-          <div className="w-full lg:w-full max-h-[50vh] lg:max-h-full flex">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={tab}
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-                className="w-full lg:w-full max-h-[50vh] lg:max-h-full flex"
-              >
-                <SongList
-                  songs={displayedSongs}
-                  activeIndex={activeIndex}
-                  setActiveIndex={(clickedIndex) => {
-                    const song = displayedSongs[clickedIndex];
-                    const realIndex = songs.findIndex((s) => s.id === song.id);
-                    if (realIndex !== -1) {
-                      setActiveIndex(realIndex);
-                      setIsPlaying(true);
-                    }
-                  }}
-                  setIsPlaying={setIsPlaying}
-                  audioManager={audioManager}
-                  loading={loading}
-                  formatTime={formatTime}
-                />
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Player */}
-        <div className="flex-1 flex flex-col px-4 pt-6 md:pt-12 md:px-8 pb-4 md:pb-8 gap-6">
-          <div className="w-full flex flex-col items-center">
-            <PlayerControls
-              song={songs.length > 0 ? songs[activeIndex] : null}
-              isPlaying={isPlaying}
-              handlePlayPause={handlePlayPause}
-              handlePrev={handlePrev}
-              handleNext={handleNext}
-              handleSeek={handleSeek}
-              position={position}
-              duration={duration}
-              formatTime={formatTime}
-              seekerRef={seekerRef}
-              audioManager={audioManager}
-            />
-          </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 };
 

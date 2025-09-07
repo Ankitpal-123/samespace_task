@@ -13,8 +13,8 @@ body {
 }
 
 .hide-scrollbar {
-  -ms-overflow-style: none; /* IE */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 /* Base */
 input[type="range"] {
@@ -37,54 +37,25 @@ input[type="range"]::-webkit-slider-runnable-track {
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 14px; /* thumb size */
+  width: 14px;
   height: 14px;
   background: #ffffff;
   border: 0;
   box-shadow: -1000px 0 0 995px #ffffff;
 }
 
-/* Firefox track */
-input[type="range"]::-moz-range-track {
-  height: 10px;
-  background: #3e3e3f;
-  border-radius: 999px;
+@media screen and (min-width: 640px) and (max-width: 770px) {
+  .leftcomponent {
+    display: none !important;
+  }
 }
 
-/* Firefox thumb */
-input[type="range"]::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  background: #ffffff;
-  border: 0;
-  box-shadow: -1000px 0 0 995px #ffffff; /* same progress trick */
-}
-
-/* Firefox requires this to allow overflow trick */
-input[type="range"]::-moz-range-progress {
-  background: transparent; /* keep progress controlled by thumb shadow */
-}
-
-/* Edge/IE (fallback) */
-input[type="range"]::-ms-track {
-  height: 10px;
-  background: transparent;
-  border-color: transparent;
-  color: transparent;
-}
-input[type="range"]::-ms-fill-lower {
-  background: #ffffff;
-  border-radius: 999px;
-}
-input[type="range"]::-ms-fill-upper {
-  background: #3e3e3f;
-  border-radius: 999px;
-}
-input[type="range"]::-ms-thumb {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  background: #ffffff;
-  border: 0;
+@media screen and (min-width: 770px) and (max-width: 1020px) {
+  .songlist {
+    height: 70vh !important;
+  }
+  .playercontroller {
+    width: 350px !important;
+    height: 350px !important;
+  }
 }

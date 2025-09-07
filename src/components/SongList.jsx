@@ -11,7 +11,7 @@ const SongList = ({
 }) => {
   return (
     <section className="w-full">
-      <div className="h-[70vh] md:h-[80vh] overflow-y-auto hide-scrollbar">
+      <div className="songlist h-[70vh] md:h-[80vh] overflow-y-auto hide-scrollbar sm:h-[0vh]">
         {loading ? (
           <div className="animate-pulse p-4">
             {[...Array(6)].map((_, i) => (

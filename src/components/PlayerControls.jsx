@@ -39,7 +39,6 @@ const PlayerControls = ({
 
   return (
     <section className="flex flex-col gap-6">
-      {/* Info */}
       <div className="flex flex-col">
         <h1 className="text-xl sm:text-2xl md:text-[32px] font-[700] text-white truncate">
           {song?.title || "—"}
@@ -49,14 +48,13 @@ const PlayerControls = ({
         </p>
       </div>
 
-      {/* Cover */}
       <div>
         <div className="rounded-xl overflow-hidden shadow-lg border border-white/10 mx-auto">
           {song?.cover ? (
             <img
               src={song.cover}
               alt="cover"
-              className="w-[350px] h-[350px] sm:w-[350px] sm:h-[350px] md:w-[450px] md:h-[450px] object-cover"
+              className="playercontroller w-[350px] h-[350px] sm:w-[350px] sm:h-[350px] md:w-[450px] md:h-[450px] object-cover"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-white/5 text-white/60">
@@ -65,7 +63,6 @@ const PlayerControls = ({
           )}
         </div>
 
-        {/* Progress */}
         <div className="w-full">
           <div className="mt-4">
             <input
@@ -86,7 +83,6 @@ const PlayerControls = ({
             </div>
           </div>
 
-          {/* Controls */}
           <div className="mt-4 w-full flex items-center justify-between gap-6">
             <HiOutlineDotsHorizontal className="h-10 w-10 p-2 bg-white/5 rounded-full" />
 
@@ -111,7 +107,6 @@ const PlayerControls = ({
               </button>
             </div>
 
-            {/* Mute toggle (uses AudioManager) */}
             <button
               onClick={handleMuteToggle}
               className="h-10 w-10 p-2 bg-white/5 rounded-full flex items-center justify-center"
