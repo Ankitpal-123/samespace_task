@@ -8,7 +8,7 @@ import Pause from "../assets/Pause_player.png";
 import Play from "../assets/Play_player.png";
 import Right from "../assets/Right_icon.png";
 
-export default function PlayerControls({
+const PlayerControls = ({
   audioManager,
   song,
   isPlaying,
@@ -20,7 +20,7 @@ export default function PlayerControls({
   duration,
   formatTime,
   seekerRef,
-}) {
+}) => {
   const [isMuted, setIsMuted] = useState(() =>
     audioManager ? audioManager.isMuted() : false
   );
@@ -41,22 +41,22 @@ export default function PlayerControls({
     <section className="flex flex-col gap-6">
       {/* Info */}
       <div className="flex flex-col">
-        <h1 className="text-[32px] text-left font-[700] text-white truncate">
+        <h1 className="text-xl sm:text-2xl md:text-[32px] font-[700] text-white truncate">
           {song?.title || "—"}
         </h1>
-        <p className="text-[16px] font-[400] text-white/70 truncate">
+        <p className="text-sm sm:text-base md:text-[16px] text-white/70 truncate">
           {song?.artist || "—"}
         </p>
       </div>
 
       {/* Cover */}
       <div>
-        <div className="rounded-xl overflow-hidden shadow-lg border border-white/10">
+        <div className="rounded-xl overflow-hidden shadow-lg border border-white/10 mx-auto">
           {song?.cover ? (
             <img
               src={song.cover}
               alt="cover"
-              className="w-[450px] h-[450px] object-cover"
+              className="w-[350px] h-[350px] sm:w-[350px] sm:h-[350px] md:w-[450px] md:h-[450px] object-cover"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-white/5 text-white/60">
@@ -128,4 +128,6 @@ export default function PlayerControls({
       </div>
     </section>
   );
-}
+};
+
+export default PlayerControls;

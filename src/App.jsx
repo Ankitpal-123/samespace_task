@@ -127,14 +127,14 @@ const App = () => {
     }
   }, [query, songs]);
 
-  const handleSongClick = (clickedIndex, list) => {
-    const song = list[clickedIndex];
-    const realIndex = songs.findIndex((s) => s.id === song.id);
-    if (realIndex !== -1) {
-      setActiveIndex(realIndex);
-      setIsPlaying(true);
-    }
-  };
+  // const handleSongClick = (clickedIndex, list) => {
+  //   const song = list[clickedIndex];
+  //   const realIndex = songs.findIndex((s) => s.id === song.id);
+  //   if (realIndex !== -1) {
+  //     setActiveIndex(realIndex);
+  //     setIsPlaying(true);
+  //   }
+  // };
 
   // pick songs based on tab (you can extend later)
   const displayedSongs = filteredSongs;
@@ -185,7 +185,14 @@ const App = () => {
               <SongList
                 songs={displayedSongs}
                 activeIndex={activeIndex}
-                setActiveIndex={(i) => handleSongClick(i, displayedSongs)}
+                setActiveIndex={(clickedIndex) => {
+                  const song = displayedSongs[clickedIndex];
+                  const realIndex = songs.findIndex((s) => s.id === song.id);
+                  if (realIndex !== -1) {
+                    setActiveIndex(realIndex);
+                    setIsPlaying(true);
+                  }
+                }}
                 setIsPlaying={setIsPlaying}
                 audioManager={audioManager}
                 loading={loading}
@@ -239,7 +246,7 @@ const App = () => {
         </div>
 
         {/* Player */}
-        <div className="flex-1 flex flex-col px-4 pt-12 md:px-8 pb-4 md:pb-8 gap-6">
+        <div className="flex-1 flex flex-col px-4 pt-6 md:pt-12 md:px-8 pb-4 md:pb-8 gap-6">
           <div className="w-full flex flex-col items-center">
             <PlayerControls
               song={songs.length > 0 ? songs[activeIndex] : null}

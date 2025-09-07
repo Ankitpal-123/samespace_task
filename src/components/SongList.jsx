@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function SongList({
+const SongList = ({
   songs,
   activeIndex,
   setActiveIndex,
@@ -8,10 +8,10 @@ export default function SongList({
   audioManager,
   loading,
   formatTime,
-}) {
+}) => {
   return (
     <section className="w-full">
-      <div className=" h-[80vh]  overflow-y-auto  hide-scrollbar">
+      <div className="h-[70vh] md:h-[80vh] overflow-y-auto hide-scrollbar">
         {loading ? (
           <div className="animate-pulse p-4">
             {[...Array(6)].map((_, i) => (
@@ -31,7 +31,7 @@ export default function SongList({
             {songs.map((s, i) => (
               <li
                 key={s.id}
-                className={`flex items-center gap-3 py-3 rounded-lg p-3 cursor-pointer ${
+                className={`flex items-center gap-3 py-2 sm:py-3 rounded-lg p-2 sm:p-3 cursor-pointer ${
                   i === activeIndex ? "bg-white/10" : "hover:bg-white/6"
                 }`}
                 onClick={() => {
@@ -40,7 +40,7 @@ export default function SongList({
                   setTimeout(() => audioManager.play(), 80);
                 }}
               >
-                <div className="w-14 h-14 rounded overflow-hidden bg-white/5">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded overflow-hidden bg-white/5 flex-shrink-0">
                   {s.cover ? (
                     <img
                       src={s.cover}
@@ -51,14 +51,16 @@ export default function SongList({
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <div className="text-white font-medium truncate">
+                    <div className="text-sm sm:text-base text-white font-medium truncate">
                       {s.title}
                     </div>
-                    <div className="text-xs text-white/60">
+                    <div className="text-xs sm:text-sm text-white/60">
                       {s.duration ? formatTime(s.duration) : "--:--"}
                     </div>
                   </div>
-                  <div className="text-sm text-white/60">{s.artist}</div>
+                  <div className="text-xs sm:text-sm text-white/60">
+                    {s.artist}
+                  </div>
                 </div>
               </li>
             ))}
@@ -67,4 +69,6 @@ export default function SongList({
       </div>
     </section>
   );
-}
+};
+
+export default SongList;

@@ -13,10 +13,9 @@ body {
 }
 
 .hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  -ms-overflow-style: none; /* IE */
+  scrollbar-width: none; /* Firefox */
 }
-
 /* Base */
 input[type="range"] {
   -webkit-appearance: none;
