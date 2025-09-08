@@ -1,4 +1,3 @@
-// src/components/AudioManager.js
 class AudioManager {
   constructor() {
     if (AudioManager.instance) return AudioManager.instance;
@@ -27,7 +26,6 @@ class AudioManager {
     try {
       return await this.audio.play();
     } catch (e) {
-      // autoplay may be blocked until user interaction — caller should handle
       console.warn("Audio play blocked:", e);
     }
   }

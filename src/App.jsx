@@ -43,13 +43,10 @@ const App = () => {
         setLoading(true);
         const res = await fetch("https://cms.samespace.com/items/songs");
         const json = await res.json();
-        console.log("Fetched songs:", json.data);
-
         if (!json || !json.data) {
           console.error("API response invalid:", json);
           return;
         }
-
         const mapped = json.data.map(mapApiSong);
         setSongs(mapped);
         setFilteredSongs(mapped);
@@ -92,7 +89,7 @@ const App = () => {
     setPosition(t);
   };
 
-  // Play / Pause
+  // Play or Pause
   const handlePlayPause = () => {
     if (isPlaying) {
       audioManager.pause();
@@ -102,7 +99,7 @@ const App = () => {
     setIsPlaying(!isPlaying);
   };
 
-  // Next / Prev
+  // Next or Prev
   const handleNext = () => {
     setActiveIndex((i) => (i + 1) % songs.length);
     setIsPlaying(true);
@@ -250,7 +247,6 @@ const App = () => {
             </div>
           </div>
 
-          {/* Player */}
           <div className="flex-1 flex flex-col px-4 pt-6 md:pt-12 md:px-8 pb-4 md:pb-8 gap-6">
             <div className="w-full flex flex-col items-center">
               <PlayerControls
